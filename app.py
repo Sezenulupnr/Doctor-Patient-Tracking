@@ -1,6 +1,7 @@
 import streamlit as st
 from doctor import doctor_page
 from patient import patient_page
+from doctor_login import doctor_login
 
 st.set_page_config(page_title="Doktor-Hasta Takip", page_icon="🏥", layout="wide")
 
@@ -18,10 +19,14 @@ if st.session_state.page == "home":
 
     with col[0]:
         st.button("Hasta Sayfasına Git", key="patient_button", on_click=lambda: setattr(st.session_state, "page", "patient"))
-        st.button("Doktor Sayfasına Git", key="doctor_button", on_click=lambda: setattr(st.session_state, "page", "doctor"))
+        st.button("Doktor Sayfasına Git", key="doctor_button", on_click=lambda: setattr(st.session_state, "page", "doctor_login"))
 
 elif st.session_state.page == "patient":
     patient_page()
 
-elif st.session_state.page == "doctor":
-    doctor_page()
+elif st.session_state.page == "doctor_login":
+    doctor_login()
+    # Eğer giriş başarılı ise yönlendirme
+    if st.session_state.get("doctor_authenticated", False):
+        st.session_state.page = "doctor"
+        doctor_page()
