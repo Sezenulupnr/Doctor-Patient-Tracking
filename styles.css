@@ -1,36 +1,32 @@
-/* Sayfa genelinde genişliği ayarlıyoruz */
 .stApp {
     max-width: 100% !important;
 }
 
-/* Sayfa içeriğini tam ortalamak için flex kullan */
 body {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     margin: 0;
-    background-color: #f0f0f0; /* Sayfa arka plan rengini değiştirebilirsiniz */
+    background-color: #f0f0f0; 
 }
 
-/* Butonları stilize et */
 .stButton > button {
     padding: 15px 30px;
     font-size: 18px;
     font-weight: bold;
-    border: 3px solid #0072B1;  /* Çerçeve rengi ve kalınlığı */
-    border-radius: 12px;  /* Yuvarlatılmış köşeler */
-    background-color: white;  /* Buton rengi */
-    color: black;  /* Yazı rengi */
-    width: 300px;  /* Buton genişliği */
-    margin: 10px 0;  /* Butonlar arasında boşluk bırak */
+    border: 3px solid #0072B1;  
+    border-radius: 12px;  
+    background-color: white;  
+    color: black;  
+    width: 300px;  
+    margin: 10px 0;  
     display: block;
-    margin: 10px auto;  /* Butonları alt alta ve ortalayarak hizala */
+    margin: 10px auto;  
 }
 
-/* Hover efekti */
 .stButton > button:hover {
-    background-color: #0072B1;  /* Hoverda renk değişir */
+    background-color: #0072B1;  
     color: white;
 }
 

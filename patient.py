@@ -1,13 +1,14 @@
 import streamlit as st
+from database import DOCTOR_DATABASE
 
-def patient_page():
+def patient_panel():
     if st.button("Ana Sayfaya Dön"): 
         st.session_state.page = "home"
 
     st.title("🩺 Hasta Paneli")
     st.write("Hasta paneline hoşgeldiniz. Semptomlarınızı burada girebilirsiniz.") 
 
-    tab1, tab2, tab3, tab4 = st.tabs(["Hasta Bilgileri", "Semptomlar", "Teşhisli Hastalıklar", "Doktor Bilgileri"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Hasta Bilgileri", "Semptomlar", "Geçmiş Sağlık Durumu", "Doktor Bilgileri"])
 
     with tab1:
         st.subheader("Hasta Bilgileri")
@@ -39,40 +40,38 @@ def patient_page():
             st.session_state.symptoms = symptoms_str
 
     with tab3:
-        st.subheader("Teşhisli Hastalıklar")
+        st.subheader("Geçmiş Sağlık Durumu")
         medical_history = st.text_area("Geçmiş Sağlık Durumu")
-        st.session_state.medical_history = medical_history if medical_history else "-"
+        st.session_state.medical_history = medical_history if medical_history else "Hastalık Geçmişi Yok"
 
     with tab4:
         st.subheader("Doktor Bilgileri")
 
-        hospital = st.text_input("Hastane")
-
-        doctor_name = st.text_input("Doktor Adı")
-
-        specialty_choices = [
-            "Acil Tıp", "Kardiyoloji", "Anesteziyoloji", "Beyin Cerrahisi", "Cardiyoloji", "Dermatoloji", "Endokrinoloji", 
-            "Gastroenteroloji", "Genetik", "Göğüs Hastalıkları", "Kadın Hastalıkları ve Doğum", 
-            "Nöroloji", "Ortopedi", "Psikiyatri", "Radyoloji", "Romatoloji", "Genel Cerrahi", 
-            "Kulak Burun Boğaz", "Beyin ve Sinir Cerrahisi"
-        ]
+        doctor_name = [doc["name"] for doc in DOCTOR_DATABASE]
+        hospital = [doc["hospital"] for doc in DOCTOR_DATABASE]
+        specialty = [doc["specialty"] for doc in DOCTOR_DATABASE]
         
-        specialty = st.selectbox("Uzmanlık Alanı", specialty_choices)
-
-        save_button = st.button("Doktor Bilgilerini Kaydet")
+        selected_doctor_name = st.selectbox("Doktor Adı", options=["Seçiniz"] + doctor_name)
+        selected_hospital = st.selectbox("Hastane", options=["Seçiniz"] + hospital)
+        selected_specialty = st.selectbox("Uzmanlık Alanı", options=["Seçiniz"] + specialty)
         
-        if doctor_name and specialty and hospital :
-            if save_button:
-                st.session_state.hospital = hospital
-                st.session_state.doctor_name = doctor_name
-                st.session_state.specialty = specialty
-                st.write(f"Hastane: {hospital}")
-                st.write(f"Doktor Adı: {doctor_name}")
-                st.write(f"Uzmanlık Alanı: {specialty}")
-                st.success("Doktor Bilgileri Kaydedildi!")
-        else:
-            if save_button:
-                st.warning("Lütfen tüm alanları doldurun.")
+        if (
+            selected_doctor_name != "Seçiniz"
+            and selected_hospital != "Seçiniz"
+            and selected_specialty != "Seçiniz"
+        ):
+            st.session_state.selected_doctor = {
+                "name": selected_doctor_name,
+                "hospital": selected_hospital,
+                "specialty": selected_specialty,
+            }
+
+        if st.button("Bilgileri Gönder"):
+            if "selected_doctor" in st.session_state:
+                st.session_state.assigned_doctor = st.session_state.selected_doctor
+                st.success("Bilgileriniz doktorunuza gönderildi!")
+            else:
+                st.error("Lütfen bir doktor seçiniz!")
 
     st.sidebar.title("Kayıtlı Bilgilerim")
 
@@ -102,4 +101,4 @@ def patient_page():
 
     if "advice" in st.session_state:
         st.sidebar.subheader("Tavsiye")
-        st.sidebar.write(f"{st.session_state.advice}")    
+        st.sidebar.write(f"{st.session_state.advice}")
